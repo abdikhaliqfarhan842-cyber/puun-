@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JavaScript Calendar</title>
+
+<style>
+:root {
+  --bg: #f5f5f5;
+  --text: #000;
+  --card: #ffffff;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #ffffff;
+  --card: #1e1e1e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+/* Container behavior */
+.calendar {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 350px;
+  margin: 40px auto;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header button {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.days, .dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.days div {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.dates div {
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.today {
+  background: #4caf50;
+  color: #fff;
+}
+
+/* 📱 Mobile */
+@media (max-width: 480px) {
+  .calendar {
+    margin: 15px auto;
+    padding: 15px;
+  }
+
+  .dates div {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .header h3 {
+    font-size: 16px;
+  }
+}
+
+/* 💻 Large screens */
+@media (min-width: 1024px) {
+  .calendar {
+    max-width: 380px;
+  }
+}
+</style>
+</head>
+
+<body class="dark">
+
+<div class="calendar">
+  <div class="header">
+    <button onclick="prevMonth()">◀</button>
+    <h3 id="monthYear"></h3>
+    <button onclick="nextMonth()">▶</button>
+  </div>
+
+  <div class="days">
+    <div>Sun</div><div>Mon</div><div>Tue</div>
+    <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+
+  <div class="dates" id="dates"></div>
+
+  <button onclick="toggleMode()" style="margin-top:10px;width:100%;">
+    🌙 / ☀️ Toggle Mode
+  </button>
+</div>
+
+<script>
+let date = new Date();
+
+function renderCalendar() {
+  const monthYear = document.getElementById("monthYear");
+  const dates = document.getElementById("dates");
+  dates.innerHTML = "";
+
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  monthYear.innerText = date.toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    dates.innerHTML += "<div></div>";
+  }
+
+  for (let d = 1; d <= lastDate; d++) {
+    const today = new Date();
+    let cls =
+      d === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+        ? "today"
+        : "";
+
+    dates.innerHTML += `<div class="${cls}">${d}</div>`;
+  }
+}
+
+function prevMonth() {
+  date.setMonth(date.getMonth() - 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  date.setMonth(date.getMonth() + 1);
+  renderCalendar();
+}
+
+function toggleMode() {
+  document.body.classList.toggle("dark");
+}
+
+renderCalendar();
+</script>
+
+</body>
+</html>
